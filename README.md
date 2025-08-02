@@ -2,6 +2,8 @@
 
 # Noctis theme ported from [Noctis](https://github.com/liviuschera/noctis)
 
+<img src="photos/noctisLogo.png" alt="Noctis" width="50%">
+
 ## Theme Variants
 
 ### Noctis
