@@ -7,7 +7,6 @@ import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-LIGHT_ALIASES = {"hibernus": "Hibernus Light", "lilac": "Lilac Light", "lux": "Lux Light"}
 
 
 def main():
@@ -32,11 +31,8 @@ def main():
         # VS Code registers appearance through package.json uiTheme. Noctis
         # Lilac's JSON has a stale type=dark despite being registered as vs.
         appearance = {"vs": "light", "vs-dark": "dark"}[entry["uiTheme"]]
-        aliases = []
-        if stem in LIGHT_ALIASES:
-            aliases.append({"file": f"{stem}-light.json", "name": LIGHT_ALIASES[stem]})
         catalog.append({"id": stem, "source": source.name, "name": entry["label"],
-                        "appearance": appearance, "file": source.name, "aliases": aliases})
+                        "appearance": appearance, "file": source.name})
     shutil.copyfile(extension / "LICENSE.md", output / "LICENSE.md")
     metadata = {"noctis_version": version, "upstream": "https://github.com/liviuschera/noctis",
                 "zed_version": "1.21.0", "files": hashes}

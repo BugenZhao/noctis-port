@@ -54067,11 +54067,6 @@
       }
     }
   },
-  "aliases": {
-    "Lux Light": "Noctis Lux",
-    "Hibernus Light": "Noctis Hibernus",
-    "Lilac Light": "Noctis Lilac"
-  },
   "ui_roles": {
     "border": "editorGroup.border",
     "border.variant": "input.border",

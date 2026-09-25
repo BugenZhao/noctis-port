@@ -6,7 +6,6 @@ documented in docs/theme-port.md. No network or third-party modules needed.
 """
 
 import argparse
-import copy
 import itertools
 import json
 import re
@@ -334,7 +333,7 @@ def semantic_entries(theme, rust=False):
 
 def generate():
     outputs = {}
-    manifest = {"source_version": SOURCES["noctis_version"], "themes": {}, "aliases": {},
+    manifest = {"source_version": SOURCES["noctis_version"], "themes": {},
                 "ui_roles": UI_MAP, "adapted_ui_roles": ADAPTED_UI_MAP}
     shared_rules = {}
     for catalog_entry in CATALOG:
@@ -380,12 +379,6 @@ def generate():
         outputs[path] = target
         manifest["themes"][theme["name"]] = {"source": str((SOURCE_DIR / catalog_entry["source"]).relative_to(ROOT)),
                                               "captures": capture_sources, "semantics": variants}
-        for alias in catalog_entry["aliases"]:
-            alias_theme = copy.deepcopy(target)
-            alias_theme["name"] = alias["name"]
-            alias_theme["themes"][0]["name"] = alias["name"]
-            outputs[ROOT / "themes" / alias["file"]] = alias_theme
-            manifest["aliases"][alias["name"]] = catalog_entry["name"]
     for flavor, rules in shared_rules.items():
         outputs[ROOT / f"settings/{flavor}-semantic.json"] = {
             "semantic_tokens": "combined",
@@ -409,8 +402,7 @@ def main():
                 path.write_text(rendered)
     if args.check and stale:
         parser.exit(1, "Stale generated files: " + ", ".join(stale) + "\n")
-    aliases = sum(len(entry["aliases"]) for entry in CATALOG)
-    print(f"{'Checked' if args.check else 'Generated'} {len(CATALOG)} Noctis themes, {aliases} aliases and semantic mapping fragments.")
+    print(f"{'Checked' if args.check else 'Generated'} {len(CATALOG)} Noctis themes and semantic mapping fragments.")
 
 
 if __name__ == "__main__":

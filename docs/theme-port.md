@@ -3,8 +3,8 @@
 All **11 original themes** are generated from the user's locally installed
 **liviuschera.noctis 10.40.0**: three light and eight dark. The catalog in
 `reference/theme-catalog.json` records each advertised name and appearance.
-Hibernus Light, Lilac Light and Lux Light remain as aliases for the canonical
-Noctis Hibernus, Noctis Lilac and Noctis Lux, yielding 14 selectable names.
+The three light themes use the original names Noctis Hibernus, Noctis Lilac and
+Noctis Lux. The picker contains exactly the 11 original names.
 
 Appearance follows the extension's `package.json` registration (`uiTheme`), as
 VS Code does. The original port assigned dark appearances to these three
@@ -22,7 +22,7 @@ python3 scripts/test_themes.py
 
 Python's standard library is sufficient. Source themes and their MIT license are
 in `reference/noctis-10.40.0/`; `reference/sources.json` records SHA-256 hashes.
-Generation covers every catalog entry and its aliases. Each file is rebuilt
+Generation covers every catalog entry. Each file is rebuilt
 entirely from source data and explicit mappings, so deleting a generated theme
 and rerunning the generator produces the same result. The old
 `generate_light_themes.py` and `test_light_themes.py` entry points forward to the
@@ -69,7 +69,7 @@ configuration fragments supply additional VS Code-compatible token routing:
 Choose **one** fragment and merge its keys into your user `settings.json`.
 Preserve existing personal semantic rules **before** the generated rules in the
 array, so personal overrides retain priority. The fragments use palette style
-names, allowing all 11 themes and their aliases to share exactly the same rules.
+names, allowing all 11 themes to share exactly the same rules.
 The 133 Rust rules are unchanged from the initial light-theme migration, so an
 existing installation's semantic configuration continues to work.
 

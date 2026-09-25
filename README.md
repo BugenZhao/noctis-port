@@ -5,22 +5,19 @@ VS Code extension with auditable UI colors, syntax colors and semantic styles.
 The original [Noctis](https://github.com/liviuschera/noctis) is by Liviu Schera;
 this fork builds on [Siddha Wachche’s Zed port](https://github.com/sidwachche/noctis-port).
 
-| Original theme | Appearance | Compatibility alias |
-| --- | --- | --- |
-| Noctis Lux | Light | Lux Light |
-| Noctis Hibernus | Light | Hibernus Light |
-| Noctis Lilac | Light | Lilac Light |
-| Noctis | Dark | — |
-| Noctis Azureus | Dark | — |
-| Noctis Bordo | Dark | — |
-| Noctis Obscuro | Dark | — |
-| Noctis Sereno | Dark | — |
-| Noctis Uva | Dark | — |
-| Noctis Viola | Dark | — |
-| Noctis Minimus | Dark | — |
-
-The original Hibernus, Lilac and Lux are light themes. Both their canonical
-`Noctis …` names and the previous `… Light` names now select the same source palette.
+| Theme | Appearance |
+| --- | --- |
+| Noctis Lux | Light |
+| Noctis Hibernus | Light |
+| Noctis Lilac | Light |
+| Noctis | Dark |
+| Noctis Azureus | Dark |
+| Noctis Bordo | Dark |
+| Noctis Obscuro | Dark |
+| Noctis Sereno | Dark |
+| Noctis Uva | Dark |
+| Noctis Viola | Dark |
+| Noctis Minimus | Dark |
 
 ## Use
 

@@ -4,102 +4,76 @@
     "source": "lux.json",
     "name": "Noctis Lux",
     "appearance": "light",
-    "file": "lux.json",
-    "aliases": [
-      {
-        "file": "lux-light.json",
-        "name": "Lux Light"
-      }
-    ]
+    "file": "lux.json"
   },
   {
     "id": "hibernus",
     "source": "hibernus.json",
     "name": "Noctis Hibernus",
     "appearance": "light",
-    "file": "hibernus.json",
-    "aliases": [
-      {
-        "file": "hibernus-light.json",
-        "name": "Hibernus Light"
-      }
-    ]
+    "file": "hibernus.json"
   },
   {
     "id": "lilac",
     "source": "lilac.json",
     "name": "Noctis Lilac",
     "appearance": "light",
-    "file": "lilac.json",
-    "aliases": [
-      {
-        "file": "lilac-light.json",
-        "name": "Lilac Light"
-      }
-    ]
+    "file": "lilac.json"
   },
   {
     "id": "noctis",
     "source": "noctis.json",
     "name": "Noctis",
     "appearance": "dark",
-    "file": "noctis.json",
-    "aliases": []
+    "file": "noctis.json"
   },
   {
     "id": "azureus",
     "source": "azureus.json",
     "name": "Noctis Azureus",
     "appearance": "dark",
-    "file": "azureus.json",
-    "aliases": []
+    "file": "azureus.json"
   },
   {
     "id": "bordo",
     "source": "bordo.json",
     "name": "Noctis Bordo",
     "appearance": "dark",
-    "file": "bordo.json",
-    "aliases": []
+    "file": "bordo.json"
   },
   {
     "id": "obscuro",
     "source": "obscuro.json",
     "name": "Noctis Obscuro",
     "appearance": "dark",
-    "file": "obscuro.json",
-    "aliases": []
+    "file": "obscuro.json"
   },
   {
     "id": "sereno",
     "source": "sereno.json",
     "name": "Noctis Sereno",
     "appearance": "dark",
-    "file": "sereno.json",
-    "aliases": []
+    "file": "sereno.json"
   },
   {
     "id": "uva",
     "source": "uva.json",
     "name": "Noctis Uva",
     "appearance": "dark",
-    "file": "uva.json",
-    "aliases": []
+    "file": "uva.json"
   },
   {
     "id": "viola",
     "source": "viola.json",
     "name": "Noctis Viola",
     "appearance": "dark",
-    "file": "viola.json",
-    "aliases": []
+    "file": "viola.json"
   },
   {
     "id": "minimus",
     "source": "minimus.json",
     "name": "Noctis Minimus",
     "appearance": "dark",
-    "file": "minimus.json",
-    "aliases": []
+    "file": "minimus.json"
   }
 ]

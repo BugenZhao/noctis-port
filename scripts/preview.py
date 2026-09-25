@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 catalog = json.loads((ROOT / "reference/theme-catalog.json").read_text())
-choices = [entry["name"] for entry in catalog] + [alias["name"] for entry in catalog for alias in entry["aliases"]]
+choices = [entry["name"] for entry in catalog]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--theme", choices=choices, default="Noctis Lux")
 parser.add_argument("--data-dir", type=Path, default=ROOT / "preview-data")
@@ -20,8 +20,10 @@ args = parser.parse_args()
 config = args.data_dir.resolve() / "config"
 (config / "themes").mkdir(parents=True, exist_ok=True)
 for entry in catalog:
-    for theme in [entry, *entry["aliases"]]:
-        shutil.copyfile(ROOT / "themes" / theme["file"], config / "themes" / theme["file"])
+    shutil.copyfile(ROOT / "themes" / entry["file"], config / "themes" / entry["file"])
+# Remove aliases left by an earlier preview profile.
+for old_name in ["hibernus-light.json", "lilac-light.json", "lux-light.json"]:
+    (config / "themes" / old_name).unlink(missing_ok=True)
 settings = json.loads((ROOT / "settings/rust-semantic.json").read_text())
 settings.update({
     "theme": args.theme,

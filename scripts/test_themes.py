@@ -101,7 +101,7 @@ class ThemeTests(unittest.TestCase):
                 for rule in rules:
                     self.assertIn(rule["style"][0], theme["style"]["syntax"])
 
-    def test_catalog_covers_vscode_manifest_and_zed_aliases(self):
+    def test_catalog_matches_vscode_manifest_exactly(self):
         package = json.loads((port.SOURCE_DIR / "package-themes.json").read_text())
         advertised = {theme["label"]: theme for theme in package["contributes"]["themes"]}
         self.assertEqual({e["name"] for e in port.CATALOG}, set(advertised))
@@ -115,16 +115,12 @@ class ThemeTests(unittest.TestCase):
             self.assertEqual(entry["appearance"], expected)
             canonical = generated[port.ROOT / "themes" / entry["file"]]["themes"][0]
             outputs.add(entry["file"])
-            for alias in entry["aliases"]:
-                copied = generated[port.ROOT / "themes" / alias["file"]]["themes"][0]
-                self.assertEqual(copied["name"], alias["name"])
-                self.assertEqual(copied["style"], canonical["style"])
-                self.assertEqual(copied["appearance"], canonical["appearance"])
-                outputs.add(alias["file"])
+            self.assertEqual(canonical["name"], entry["name"])
+            self.assertNotIn("aliases", entry)
         self.assertEqual(outputs, {p.name for p in (port.ROOT / "themes").glob("*.json")})
 
     def test_original_light_palette_regressions(self):
-        theme = json.loads((port.ROOT / "themes/lux-light.json").read_text())["themes"][0]
+        theme = json.loads((port.ROOT / "themes/lux.json").read_text())["themes"][0]
         self.assertEqual(theme["style"]["syntax"]["variable.parameter"],
                          {"color": "#fa8900ff", "font_style": "normal", "font_weight": 700})
         self.assertEqual(theme["style"]["syntax"]["lifetime"],
