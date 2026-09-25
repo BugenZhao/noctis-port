@@ -1,7 +1,15 @@
 # Noctis for Zed
 
-All **11 original Noctis 10.40.0 themes**, generated from the locally installed
-VS Code extension with auditable UI colors, syntax colors and semantic styles.
+All **11 original Noctis 10.40.0 themes** for Zed, with source-derived UI colors,
+syntax colors, and LSP semantic styles.
+
+**[Live theme preview](https://bugenzhao.github.io/noctis-port/)** ·
+[Semantic setup and mapping details](docs/theme-port.md) ·
+[Theme source snapshots](reference/noctis-10.40.0)
+
+The preview lets you switch palettes and click Rust tokens to inspect their
+types, modifiers, colors, font styles, and original theme rules.
+
 The original [Noctis](https://github.com/liviuschera/noctis) is by Liviu Schera;
 this fork builds on [Siddha Wachche’s Zed port](https://github.com/sidwachche/noctis-port).
 
@@ -19,15 +27,39 @@ this fork builds on [Siddha Wachche’s Zed port](https://github.com/sidwachche/
 | Noctis Viola | Dark |
 | Noctis Minimus | Dark |
 
-## Use
+## Install
 
-1. Run **zed: install dev extension** and select this checkout.
-2. Select a Noctis theme in the theme picker.
-3. Enable `"semantic_tokens": "combined"` and merge the appropriate fragment from
-   `settings/` to use the precise VS Code semantic mappings.
+```sh
+git clone https://github.com/BugenZhao/noctis-port.git
+```
+
+1. In Zed, run **zed: install dev extension** and select the cloned `noctis-port` directory.
+2. Run **theme selector: toggle** and select a Noctis theme.
+3. Enable semantic highlighting in your Zed settings:
+
+```json
+{
+  "theme": "Noctis Lux",
+  "semantic_tokens": "combined"
+}
+```
+
+For the VS Code-compatible semantic mappings, merge **one** of these fragments
+into your user settings:
+
+| Profile | Use |
+| --- | --- |
+| [Standard semantic rules](settings/standard-semantic.json) | General-purpose token mappings across languages |
+| [Rust semantic rules](settings/rust-semantic.json) | Rust-focused parity with the pinned rust-analyzer extension |
+
+Keep your existing personal rules before the imported rules in
+`global_lsp_settings.semantic_token_rules`. Zed applies these user rules globally:
+the Rust profile also affects shared token types in other languages.
+All 11 palettes use the same rule names, so switching themes keeps the mapping.
 
 [Setup, mapping contract and validation](docs/theme-port.md) explains the standard
-and Rust mapping profiles, precedence and fidelity boundaries.
+and Rust profiles, precedence, and fidelity boundaries. A language-server restart
+may be needed after enabling semantic tokens.
 
 ## Rebuild
 
@@ -38,14 +70,16 @@ python3 scripts/generate_themes.py --check
 python3 scripts/test_themes.py
 ```
 
+The checked-in snapshots make rebuilding possible without an installed VS Code
+extension; run `import_sources.py` when updating those snapshots.
 The generator is driven by `reference/theme-catalog.json`; every advertised VS Code
 variant is covered. Generated files rebuild entirely from the checked-in sources
 and mapping tables. Python’s standard library is sufficient.
 
 ## Preview
 
-Open [the self-contained semantic preview](docs/preview.html) in a browser to
-compare all 11 palettes and inspect real Rust tokens.
+Use the **[online preview](https://bugenzhao.github.io/noctis-port/)** or download
+the [self-contained HTML](docs/preview.html) and open it locally.
 
 ```sh
 python3 scripts/preview.py --theme 'Noctis Minimus'
@@ -55,4 +89,17 @@ python3 scripts/inspect_rust_tokens.py \
 ```
 
 The second command renders all 11 themes from real language-server tokens, with a
-clickable token inspector. It also writes a JSON verification report.
+clickable token inspector. It also writes a JSON verification report and LSP log
+alongside the HTML. The page renders the semantic layer; native Zed layout and
+Tree-sitter fallback rendering have separate coverage.
+
+## Publishing the preview
+
+The [Pages workflow](.github/workflows/pages.yml) deploys the checked-in
+`docs/preview.html` as the website root whenever that file changes on `main`.
+It also supports manual runs from the Actions tab. Regenerate and commit the HTML
+alongside palette changes to keep the hosted preview current.
+
+Current validation covers eight tests, 59,136 semantic mapping combinations, and
+208 real Rust tokens across all 11 palettes. See the mapping document for the
+exact source versions and remaining native-rendering coverage.

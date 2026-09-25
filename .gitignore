@@ -3,3 +3,6 @@
 __pycache__/
 /examples/rust/target/
 /preview-data/
+/_site/
+/docs/preview.json
+/docs/preview.lsp.log

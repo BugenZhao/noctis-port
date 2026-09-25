@@ -1,5 +1,7 @@
 # Noctis themes and semantic highlighting
 
+[Open the live theme and token preview](https://bugenzhao.github.io/noctis-port/).
+
 All **11 original themes** are generated from the user's locally installed
 **liviuschera.noctis 10.40.0**: three light and eight dark. The catalog in
 `reference/theme-catalog.json` records each advertised name and appearance.
@@ -163,3 +165,15 @@ Compare token type, modifiers, foreground, bold and italic separately.
 References: [VS Code semantic highlighting](https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide),
 [Zed semantic tokens](https://zed.dev/docs/semantic-tokens),
 [Zed theme format](https://zed.dev/docs/extensions/themes).
+
+## GitHub Pages
+
+The public preview is hosted at <https://bugenzhao.github.io/noctis-port/>.
+`.github/workflows/pages.yml` copies the committed `docs/preview.html` to the
+site root and deploys it using GitHub Actions. Preview or workflow changes on
+`main` trigger a deployment; maintainers can also use **Run workflow**.
+
+Regenerate the HTML with `inspect_rust_tokens.py`, review it locally, and commit
+it with the corresponding theme changes. The adjacent JSON verification report
+and LSP log are local artifacts covered by `.gitignore`. Deployment uses the
+committed HTML and requires no language-server download or frontend build.
