@@ -1,0 +1,14 @@
+{
+  "version": "1.21.0",
+  "upstream": "https://github.com/zed-industries/zed/tree/v1.21.0",
+  "files": {
+    "default_semantic_token_rules.jsonc": {
+      "path": "assets/settings/default_semantic_token_rules.json",
+      "sha256": "f74662c584665bf544a469dce3885a8c4ce3d4c3ffebd7b72c48ecd48ce309a3"
+    },
+    "rust_semantic_token_rules.json": {
+      "path": "crates/grammars/src/rust/semantic_token_rules.json",
+      "sha256": "5d51c8f92b553e748c91fa04c4a8a9c4671494ebe89a6b64ef89adfab06fb43a"
+    }
+  }
+}

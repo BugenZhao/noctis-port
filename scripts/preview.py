@@ -24,8 +24,8 @@ for entry in catalog:
 # Remove aliases left by an earlier preview profile.
 for old_name in ["hibernus-light.json", "lilac-light.json", "lux-light.json"]:
     (config / "themes" / old_name).unlink(missing_ok=True)
-settings = json.loads((ROOT / "settings/rust-semantic.json").read_text())
-settings.update({
+settings = {
+    "semantic_tokens": "combined",
     "theme": args.theme,
     "buffer_font_family": "Iosevka Bugen",
     "buffer_font_size": 14,
@@ -33,7 +33,7 @@ settings.update({
     "restore_on_startup": "none",
     "autosave": "off",
     "telemetry": {"metrics": False, "diagnostics": False},
-})
+}
 if args.rust_analyzer:
     settings["lsp"] = {"rust-analyzer": {
         "binary": {"path": str(args.rust_analyzer.resolve())},

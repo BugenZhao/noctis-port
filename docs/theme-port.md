@@ -40,11 +40,10 @@ python3 scripts/inspect_rust_tokens.py \
 ```
 
 The implementation run used rust-analyzer `2026-01-19` and received **208 tokens**
-from the fixture. All 11 palettes matched their reference semantic styles;
-**203 tokens** had a resolved semantic style and **5** rely on base syntax
-highlighting in combined mode. The HTML preview displays the semantic layer.
-Native Zed rendering remains unverified: the isolated app preview hit a native
-window-control failure. The runtime check verifies LSP data and mapping results.
+from the fixture. Every token resolves through Zed's built-in Rust/default rules
+in all 11 palettes. The HTML shows the resulting semantic overlay and the rule,
+style name, and source palette behind each token. Native Zed layout and
+Tree-sitter composition have separate coverage; see the [audit](semantic-rule-audit.md).
 
 ## Use the themes
 
@@ -60,27 +59,16 @@ Enable LSP semantic highlighting with:
 }
 ```
 
-The theme files supply Zed's built-in styles, including parameters, fields,
-lifetimes, special variables, primitive types and type declarations. The optional
-configuration fragments supply additional VS Code-compatible token routing:
+The native chain is **language server → Zed language/default mappings → theme
+syntax styles**. The theme supplies names such as `variable.parameter`,
+`property`, `lifetime`, `type`, and `keyword`. Zed chooses the mapping, and Noctis
+supplies the palette and font styles. Differences from VS Code's token routing
+are expected and accepted.
 
-- `settings/standard-semantic.json`: VS Code's standard token/scope mapping.
-- `settings/rust-semantic.json`: that mapping plus the local rust-analyzer
-  extension's Rust-specific overrides and token inheritance.
-
-Choose **one** fragment and merge its keys into your user `settings.json`.
-Preserve existing personal semantic rules **before** the generated rules in the
-array, so personal overrides retain priority. The fragments use palette style
-names, allowing all 11 themes to share exactly the same rules.
-The 133 Rust rules are unchanged from the initial light-theme migration, so an
-existing installation's semantic configuration continues to work.
-
-Zed 1.21's user semantic rules are global and expose type/modifier selectors,
-with no language selector. The **Rust fragment prioritizes Rust parity**: its
-shared token rules (notably `keyword`, `type` and `variable`) also affect other
-language servers. Use the standard fragment for language-neutral behavior.
-These fragments are scoped by their `noctis.*` style names: another theme will
-fall through to Zed's built-in styling when those styles are absent.
+Installation requires zero Noctis-specific `semantic_token_rules`. Earlier
+versions supplied generated `noctis.rust.*` / `noctis.semantic.*` routing rules;
+remove those rules from your settings when upgrading. Keep personal overrides
+such as an unresolved-reference color rule.
 
 ## Isolated preview
 
@@ -89,8 +77,7 @@ python3 scripts/preview.py --theme 'Noctis Minimus'
 ```
 
 This opens `examples/rust` in a separate Zed data/configuration directory under
-`preview-data/`. The preview explicitly enables semantic tokens and the Rust
-mapping; your normal settings, extensions and session data stay in their normal
+`preview-data/`. The preview enables semantic tokens and uses Zed's built-in mappings; your normal settings, extensions and session data stay in their normal
 directory. Use `--rust-analyzer /absolute/path/to/rust-analyzer` to reuse a
 particular installed binary. `--prepare-only` writes the isolated profile without
 launching Zed. The launcher sets `ZED_STATELESS=1` for the preview process to
@@ -113,36 +100,30 @@ The conversion follows these pinned inputs:
    [Rust rules](https://github.com/zed-industries/zed/blob/v1.21.0/crates/grammars/src/rust/semantic_token_rules.json),
    and [the renderer](https://github.com/zed-industries/zed/blob/v1.21.0/crates/editor/src/semantic_tokens.rs).
 
-VS Code resolves foreground and font style independently. A later equally
-specific rule wins; `fontStyle: ""` explicitly resets bold and italic. Rust
-language-specific fallback mappings receive VS Code's language-specific score.
-The generator enumerates relevant modifier combinations and materializes the
-resolved styles, preserving property-wise precedence in Zed's ordered rules.
+The theme generator resolves Noctis foreground and font style independently
+for each native Zed style name. Its `CAPTURES` table records the canonical
+TextMate probes; `reference/generated-mapping.json` records each source rule.
+These source-color probes build the theme. Runtime LSP token routing is handled
+by Zed's built-in rules, with snapshots in `reference/zed-1.21.0` used by the
+preview and tests.
 
-Each `noctis.semantic.*` or `noctis.rust.*` style has an audit entry in
-`reference/generated-mapping.json`: token type, modifiers, original scope, and
-the original rule responsible for every style property. Noctis 10.40.0 has no
-standalone rule styling the `markup.underline` probe, so Rust's `mutable` modifier
-does not acquire an invented underline in this port.
+Examples of Zed's native Rust mapping for all three light variants:
 
-Examples of resolved Rust styles shared by all three light variants:
-
-| Token | Color | Font |
-| --- | --- | --- |
-| Parameter | `#fa8900` | Bold |
-| Field/property | `#fa8900` | Italic |
-| Readonly field | `#a88c00` | Italic |
-| Lifetime | `#b3694d` | Bold italic |
-| Primitive type | `#b3694d` | Italic |
-| Function | `#0095a8` | Inherits base font |
-| Rust keyword | `#e64100` | Normal |
-| Rust control-flow keyword | `#ff5792` | Bold |
+| Token | Theme style | Color | Font |
+| --- | --- | --- | --- |
+| Parameter | `variable.parameter` | `#fa8900` | Bold |
+| Field | `property` | `#fa8900` | Italic |
+| Lifetime | `lifetime` | `#b3694d` | Bold italic |
+| Primitive type | `type` | `#0094f0` | Regular |
+| Function | `function` | `#0095a8` | Regular |
+| Keyword | `keyword` | `#ff5792` | Bold |
 
 ## Fidelity boundaries
 
-- **Semantic styles:** resolved against the pinned VS Code and rust-analyzer
-  mappings. Eight tests compare 59,136 token/modifier/theme combinations with the
-  generated Zed rule order and include independent style goldens.
+- **Semantic styles:** native Zed mapping governs the token categories. Tests
+  verify style coverage and actual LSP tokens, and compare the model with the
+  pinned Zed renderer function. The [audit](semantic-rule-audit.md) records the
+  intentional differences from the former VS Code-compatible profile.
 - **Tree-sitter:** explicit canonical TextMate probes are recorded in the
   generator's `CAPTURES`. Parser-specific captures and contextual TextMate scopes
   can differ; language-wide pixel parity remains a separate validation task.
@@ -158,9 +139,8 @@ Examples of resolved Rust styles shared by all three light variants:
   your user settings and takes precedence over the theme. It is kept separate
   from the reusable Noctis palette.
 
-For runtime inspection, use VS Code's **Developer: Inspect Editor Tokens and
-Scopes** and Zed's **dev: open highlights tree view** on the same Rust fixture.
-Compare token type, modifiers, foreground, bold and italic separately.
+For runtime inspection, use Zed's **dev: open highlights tree view** on the Rust
+fixture to inspect token types, modifiers, and styles.
 
 References: [VS Code semantic highlighting](https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide),
 [Zed semantic tokens](https://zed.dev/docs/semantic-tokens),

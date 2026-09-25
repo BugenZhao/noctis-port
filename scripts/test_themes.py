@@ -7,6 +7,7 @@ import re
 import unittest
 
 import generate_themes as port
+import audit_semantic_rules as zed
 
 
 class ThemeTests(unittest.TestCase):
@@ -96,10 +97,20 @@ class ThemeTests(unittest.TestCase):
                 self.assertEqual(theme["style"][key], port.color(source["colors"][original]))
             for value in re.findall(r'"(#[^"]+)"', json.dumps(theme)):
                 self.assertRegex(value, r"^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$")
-            for flavor in ["standard", "rust"]:
-                rules = generated[port.ROOT / f"settings/{flavor}-semantic.json"]["global_lsp_settings"]["semantic_token_rules"]
-                for rule in rules:
-                    self.assertIn(rule["style"][0], theme["style"]["syntax"])
+            syntax = theme["style"]["syntax"]
+            self.assertFalse(any(name.startswith("noctis.") for name in syntax))
+            for rule in zed.builtin_rules(True):
+                self.assertTrue(any(name in syntax for name in rule["style"]), rule)
+
+    def test_native_semantic_chain(self):
+        for entry in port.CATALOG:
+            syntax = json.loads((port.ROOT / "themes" / entry["file"]).read_text())["themes"][0]["style"]["syntax"]
+            for token, capture in [("parameter", "variable.parameter"), ("property", "property"),
+                                   ("lifetime", "lifetime"), ("builtinType", "type"),
+                                   ("keyword", "keyword"), ("variable", "variable")]:
+                self.assertEqual(zed.render(syntax, zed.builtin_rules(True), token, []), syntax[capture])
+            self.assertEqual(zed.render(syntax, zed.builtin_rules(True), "keyword", ["controlFlow"]), syntax["keyword"])
+            self.assertEqual(zed.render(syntax, zed.builtin_rules(True), "variable", ["mutable"]), syntax["variable"])
 
     def test_catalog_matches_vscode_manifest_exactly(self):
         package = json.loads((port.SOURCE_DIR / "package-themes.json").read_text())

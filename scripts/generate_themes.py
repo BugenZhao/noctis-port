@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Rebuild the entire Noctis catalog from the checked-in VS Code sources.
 
-Scope and semantic-selector scoring follow the pinned VS Code implementation
-documented in docs/theme-port.md. No network or third-party modules needed.
+Native Zed style colors come from pinned VS Code TextMate scopes. The legacy
+semantic reference helpers support the mapping audit only; theme generation
+uses Zed's native style names. No network or third-party modules needed.
 """
 
 import argparse
@@ -267,6 +268,7 @@ def resolve_scopes(theme, probes):
 
 
 def hierarchy(token_type, types):
+    """Legacy VS Code reference support, used by audit/tests only."""
     result = [token_type]
     while types.get(result[-1]):
         parent = types[result[-1]]
@@ -335,7 +337,6 @@ def generate():
     outputs = {}
     manifest = {"source_version": SOURCES["noctis_version"], "themes": {},
                 "ui_roles": UI_MAP, "adapted_ui_roles": ADAPTED_UI_MAP}
-    shared_rules = {}
     for catalog_entry in CATALOG:
         source = json.loads((SOURCE_DIR / catalog_entry["source"]).read_text())
         path = ROOT / "themes" / catalog_entry["file"]
@@ -364,26 +365,10 @@ def generate():
             syntax[capture] = {"color": color(source["colors"]["editor.foreground"]),
                                "font_style": "normal", "font_weight": 400, **resolved}
             capture_sources[capture] = provenance
-        variants = {}
-        for flavor, rust in [("standard", False), ("rust", True)]:
-            entries = semantic_entries(source, rust)
-            for entry in entries:
-                syntax[entry["name"]] = entry["style"]
-            rules = [{"token_type": e["token_type"], "token_modifiers": e["modifiers"],
-                      "style": [e["name"]]} for e in entries]
-            if flavor in shared_rules:
-                assert rules == shared_rules[flavor], "Theme variants require different rule ordering"
-            shared_rules[flavor] = rules
-            variants[flavor] = entries
         style["syntax"] = syntax
         outputs[path] = target
         manifest["themes"][theme["name"]] = {"source": str((SOURCE_DIR / catalog_entry["source"]).relative_to(ROOT)),
-                                              "captures": capture_sources, "semantics": variants}
-    for flavor, rules in shared_rules.items():
-        outputs[ROOT / f"settings/{flavor}-semantic.json"] = {
-            "semantic_tokens": "combined",
-            "global_lsp_settings": {"semantic_token_rules": rules},
-        }
+                                              "captures": capture_sources}
     outputs[ROOT / "reference/generated-mapping.json"] = manifest
     return outputs
 
@@ -402,7 +387,7 @@ def main():
                 path.write_text(rendered)
     if args.check and stale:
         parser.exit(1, "Stale generated files: " + ", ".join(stale) + "\n")
-    print(f"{'Checked' if args.check else 'Generated'} {len(CATALOG)} Noctis themes and semantic mapping fragments.")
+    print(f"{'Checked' if args.check else 'Generated'} {len(CATALOG)} native Zed Noctis themes.")
 
 
 if __name__ == "__main__":

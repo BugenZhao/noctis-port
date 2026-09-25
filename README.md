@@ -8,7 +8,7 @@ syntax colors, and LSP semantic styles.
 [Theme source snapshots](reference/noctis-10.40.0)
 
 The preview lets you switch palettes and click Rust tokens to inspect their
-types, modifiers, colors, font styles, and original theme rules.
+types, modifiers, Zed mapping rules, theme styles, and original Noctis colors.
 
 The original [Noctis](https://github.com/liviuschera/noctis) is by Liviu Schera;
 this fork builds on [Siddha Wachche’s Zed port](https://github.com/sidwachche/noctis-port).
@@ -44,22 +44,17 @@ git clone https://github.com/BugenZhao/noctis-port.git
 }
 ```
 
-For the VS Code-compatible semantic mappings, merge **one** of these fragments
-into your user settings:
+Zed's built-in language and semantic mappings connect LSP tokens to the theme.
+The theme uses native style names, so installation needs zero Noctis-specific
+`semantic_token_rules`. Personal overrides such as unresolved-reference styling
+can stay in your settings.
 
-| Profile | Use |
-| --- | --- |
-| [Standard semantic rules](settings/standard-semantic.json) | General-purpose token mappings across languages |
-| [Rust semantic rules](settings/rust-semantic.json) | Rust-focused parity with the pinned rust-analyzer extension |
+For an earlier installation, remove rules whose `style` names start with
+`noctis.rust.` or `noctis.semantic.`. Keep semantic highlighting enabled.
+A language-server restart may be needed after enabling semantic tokens.
 
-Keep your existing personal rules before the imported rules in
-`global_lsp_settings.semantic_token_rules`. Zed applies these user rules globally:
-the Rust profile also affects shared token types in other languages.
-All 11 palettes use the same rule names, so switching themes keeps the mapping.
-
-[Setup, mapping contract and validation](docs/theme-port.md) explains the standard
-and Rust profiles, precedence, and fidelity boundaries. A language-server restart
-may be needed after enabling semantic tokens.
+[Setup and native mapping details](docs/theme-port.md) documents the source
+palettes, Zed's mapping behavior, and validation coverage.
 
 ## Rebuild
 
@@ -100,6 +95,7 @@ The [Pages workflow](.github/workflows/pages.yml) deploys the checked-in
 It also supports manual runs from the Actions tab. Regenerate and commit the HTML
 alongside palette changes to keep the hosted preview current.
 
-Current validation covers eight tests, 59,136 semantic mapping combinations, and
-208 real Rust tokens across all 11 palettes. See the mapping document for the
-exact source versions and remaining native-rendering coverage.
+Validation includes the pinned Zed renderer function, native style coverage,
+and 208 actual Rust tokens across all 11 palettes. See the
+[mapping audit](docs/semantic-rule-audit.md) for the source analysis and test
+boundaries.
