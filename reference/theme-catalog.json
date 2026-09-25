@@ -1,0 +1,105 @@
+[
+  {
+    "id": "lux",
+    "source": "lux.json",
+    "name": "Noctis Lux",
+    "appearance": "light",
+    "file": "lux.json",
+    "aliases": [
+      {
+        "file": "lux-light.json",
+        "name": "Lux Light"
+      }
+    ]
+  },
+  {
+    "id": "hibernus",
+    "source": "hibernus.json",
+    "name": "Noctis Hibernus",
+    "appearance": "light",
+    "file": "hibernus.json",
+    "aliases": [
+      {
+        "file": "hibernus-light.json",
+        "name": "Hibernus Light"
+      }
+    ]
+  },
+  {
+    "id": "lilac",
+    "source": "lilac.json",
+    "name": "Noctis Lilac",
+    "appearance": "light",
+    "file": "lilac.json",
+    "aliases": [
+      {
+        "file": "lilac-light.json",
+        "name": "Lilac Light"
+      }
+    ]
+  },
+  {
+    "id": "noctis",
+    "source": "noctis.json",
+    "name": "Noctis",
+    "appearance": "dark",
+    "file": "noctis.json",
+    "aliases": []
+  },
+  {
+    "id": "azureus",
+    "source": "azureus.json",
+    "name": "Noctis Azureus",
+    "appearance": "dark",
+    "file": "azureus.json",
+    "aliases": []
+  },
+  {
+    "id": "bordo",
+    "source": "bordo.json",
+    "name": "Noctis Bordo",
+    "appearance": "dark",
+    "file": "bordo.json",
+    "aliases": []
+  },
+  {
+    "id": "obscuro",
+    "source": "obscuro.json",
+    "name": "Noctis Obscuro",
+    "appearance": "dark",
+    "file": "obscuro.json",
+    "aliases": []
+  },
+  {
+    "id": "sereno",
+    "source": "sereno.json",
+    "name": "Noctis Sereno",
+    "appearance": "dark",
+    "file": "sereno.json",
+    "aliases": []
+  },
+  {
+    "id": "uva",
+    "source": "uva.json",
+    "name": "Noctis Uva",
+    "appearance": "dark",
+    "file": "uva.json",
+    "aliases": []
+  },
+  {
+    "id": "viola",
+    "source": "viola.json",
+    "name": "Noctis Viola",
+    "appearance": "dark",
+    "file": "viola.json",
+    "aliases": []
+  },
+  {
+    "id": "minimus",
+    "source": "minimus.json",
+    "name": "Noctis Minimus",
+    "appearance": "dark",
+    "file": "minimus.json",
+    "aliases": []
+  }
+]

@@ -1,69 +1,61 @@
-Hibernus Light, Lilac Light, and Lux Light are now generated from the local
-VS Code Noctis **10.40.0** source, with auditable semantic colors and font styles.
-See [light theme setup, provenance and validation](docs/light-theme-port.md).
+# Noctis for Zed
 
-<div align="center">
+All **11 original Noctis 10.40.0 themes**, generated from the locally installed
+VS Code extension with auditable UI colors, syntax colors and semantic styles.
+The original [Noctis](https://github.com/liviuschera/noctis) is by Liviu Schera;
+this fork builds on [Siddha Wachche’s Zed port](https://github.com/sidwachche/noctis-port).
 
-# Noctis theme ported from [Noctis](https://github.com/liviuschera/noctis)
+| Original theme | Appearance | Compatibility alias |
+| --- | --- | --- |
+| Noctis Lux | Light | Lux Light |
+| Noctis Hibernus | Light | Hibernus Light |
+| Noctis Lilac | Light | Lilac Light |
+| Noctis | Dark | — |
+| Noctis Azureus | Dark | — |
+| Noctis Bordo | Dark | — |
+| Noctis Obscuro | Dark | — |
+| Noctis Sereno | Dark | — |
+| Noctis Uva | Dark | — |
+| Noctis Viola | Dark | — |
+| Noctis Minimus | Dark | — |
 
-<img src="photos/noctisLogo.png" alt="Noctis" width="50%">
+The original Hibernus, Lilac and Lux are light themes. Both their canonical
+`Noctis …` names and the previous `… Light` names now select the same source palette.
 
-## Theme Variants
+## Use
 
-### Noctis
+1. Run **zed: install dev extension** and select this checkout.
+2. Select a Noctis theme in the theme picker.
+3. Enable `"semantic_tokens": "combined"` and merge the appropriate fragment from
+   `settings/` to use the precise VS Code semantic mappings.
 
-<img src="photos/Noctis.png" alt="Noctis" width="90%">
+[Setup, mapping contract and validation](docs/theme-port.md) explains the standard
+and Rust mapping profiles, precedence and fidelity boundaries.
 
-### Azureus
+## Rebuild
 
-<img src="photos/Azureus.png" alt="Azureus" width="90%">
+```sh
+python3 scripts/import_sources.py --extension /path/to/liviuschera.noctis-10.40.0
+python3 scripts/generate_themes.py
+python3 scripts/generate_themes.py --check
+python3 scripts/test_themes.py
+```
 
-### Bordo
+The generator is driven by `reference/theme-catalog.json`; every advertised VS Code
+variant is covered. Generated files rebuild entirely from the checked-in sources
+and mapping tables. Python’s standard library is sufficient.
 
-<img src="photos/Bordo.png" alt="Bordo" width="90%">
+## Preview
 
-### Hibernus
+Open [the self-contained semantic preview](docs/preview.html) in a browser to
+compare all 11 palettes and inspect real Rust tokens.
 
-<img src="photos/Hibernus.png" alt="Hibernus" width="90%">
+```sh
+python3 scripts/preview.py --theme 'Noctis Minimus'
+python3 scripts/inspect_rust_tokens.py \
+  --rust-analyzer /path/to/rust-analyzer \
+  --output docs/preview.html
+```
 
-### Hibernus Light
-
-<img src="photos/Hibernus-light.png" alt="Hibernus Light" width="90%">
-
-### Lilac
-
-<img src="photos/Lilac.png" alt="Lilac" width="90%">
-
-### Lilac Light
-
-<img src="photos/Lilac-light.png" alt="Lilac Light" width="90%">
-
-### Lux
-
-<img src="photos/Lux.png" alt="Lux" width="90%">
-
-### Lux Light
-
-<img src="photos/lux-light.png" alt="Lux Light" width="90%">
-
-### Minimus
-
-<img src="photos/Minimus.png" alt="Minimus" width="90%">
-
-### Obscuro
-
-<img src="photos/Obscuro.png" alt="Obscuro" width="90%">
-
-### Sereno
-
-<img src="photos/Sereno.png" alt="Sereno" width="90%">
-
-### Uva
-
-<img src="photos/Uva.png" alt="Uva" width="90%">
-
-### Viola
-
-<img src="photos/Viola.png" alt="Viola" width="90%">
-
-</div>
+The second command renders all 11 themes from real language-server tokens, with a
+clickable token inspector. It also writes a JSON verification report.

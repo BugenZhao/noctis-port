@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Preview the light themes in an isolated Zed profile (Zed 1.21+)."""
+"""Preview any generated Noctis theme in an isolated Zed profile (Zed 1.21+)."""
 import argparse
 import json
 import os
@@ -8,8 +8,10 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+catalog = json.loads((ROOT / "reference/theme-catalog.json").read_text())
+choices = [entry["name"] for entry in catalog] + [alias["name"] for entry in catalog for alias in entry["aliases"]]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--theme", choices=["Hibernus Light", "Lilac Light", "Lux Light"], default="Lux Light")
+parser.add_argument("--theme", choices=choices, default="Noctis Lux")
 parser.add_argument("--data-dir", type=Path, default=ROOT / "preview-data")
 parser.add_argument("--rust-analyzer", type=Path, help="Use an existing language-server binary")
 parser.add_argument("--zed-app", type=Path, help="Use a specific installed Zed app bundle")
@@ -17,8 +19,9 @@ parser.add_argument("--prepare-only", action="store_true")
 args = parser.parse_args()
 config = args.data_dir.resolve() / "config"
 (config / "themes").mkdir(parents=True, exist_ok=True)
-for name in ["hibernus", "lilac", "lux"]:
-    shutil.copyfile(ROOT / f"themes/{name}-light.json", config / f"themes/{name}-light.json")
+for entry in catalog:
+    for theme in [entry, *entry["aliases"]]:
+        shutil.copyfile(ROOT / "themes" / theme["file"], config / "themes" / theme["file"])
 settings = json.loads((ROOT / "settings/rust-semantic.json").read_text())
 settings.update({
     "theme": args.theme,

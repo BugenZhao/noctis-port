@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Query real rust-analyzer semantic tokens and render a three-theme HTML preview."""
+"""Query real rust-analyzer semantic tokens and render the complete Noctis catalog."""
 import argparse
 import collections
 import html
@@ -10,7 +10,7 @@ import threading
 import time
 from pathlib import Path
 
-import generate_light_themes as port
+import generate_themes as port
 
 
 class Lsp:
@@ -165,9 +165,10 @@ def main():
     panels = []
     summary = {"server": str(args.rust_analyzer), "token_count": len(tokens),
                "token_types": dict(categories), "theme_checks": {}, "native_zed_rendering": "not_verified"}
-    for variant in port.VARIANTS:
-        theme = json.loads((port.ROOT / f"themes/{variant}-light.json").read_text())["themes"][0]
-        original = json.loads((port.ROOT / f"reference/noctis-10.40.0/{variant}.json").read_text())
+    for entry in port.CATALOG:
+        variant = entry["id"]
+        theme = json.loads((port.ROOT / "themes" / entry["file"]).read_text())["themes"][0]
+        original = json.loads((port.SOURCE_DIR / entry["source"]).read_text())
         entries = port.semantic_entries(original, rust=True)
         parts, previous, mapped = [], 0, 0
         for token in tokens:
@@ -188,11 +189,12 @@ def main():
             previous = token["end"]
         parts.append(html.escape(source[previous:]))
         s = theme["style"]
-        panels.append(f'<section id="{variant}" class="theme" style="--bg:{s["editor.background"]};--fg:{s["editor.foreground"]};--bar:{s["tab_bar.background"]};--muted:{s["editor.line_number"]}"><h2>{theme["name"]}<small>Noctis 10.40.0 · rust-analyzer semantic tokens</small></h2><pre>{"".join(parts)}</pre></section>')
+        panels.append(f'<section id="{variant}" class="theme" style="--bg:{s["editor.background"]};--fg:{s["editor.foreground"]};--bar:{s["tab_bar.background"]};--muted:{s["editor.line_number"]}"><h2>{theme["name"]}<small>Noctis {port.SOURCES["noctis_version"]} · {entry["appearance"]} · rust-analyzer semantic tokens</small></h2><pre>{"".join(parts)}</pre></section>')
         summary["theme_checks"][theme["name"]] = {"token_comparisons": len(tokens), "mapped_tokens": mapped, "mismatches": 0}
-    document = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Noctis light semantic preview</title>
-<style>*{box-sizing:border-box}body{margin:0;background:#f5f5f4;color:#25252b;font:15px -apple-system,BlinkMacSystemFont,sans-serif}header{padding:20px 28px;border-bottom:1px solid #ddd}h1{font-size:22px;margin:0 0 8px}p{max-width:950px;line-height:1.5;margin:6px 0}nav{display:flex;gap:8px;margin-top:16px}button{border:1px solid #bbb;background:white;padding:9px 15px;border-radius:7px;cursor:pointer}button.active{background:#25252b;color:white}main{display:grid;grid-template-columns:minmax(400px,1fr) 360px;gap:20px;padding:20px 28px}.theme{display:none;background:var(--bg);color:var(--fg);border:1px solid #ccc;border-radius:9px;overflow:hidden}.theme.active{display:block}h2{font-size:15px;background:var(--bar);margin:0;padding:14px 20px}small{display:block;font-size:11px;font-weight:400;margin-top:4px}pre{font:14px/1.6 'Iosevka Bugen',ui-monospace,monospace;margin:0;padding:20px;overflow:auto;tab-size:4}span[data-info]:hover,span[data-info]:focus{outline:1px solid #777;outline-offset:1px}aside{position:sticky;top:20px;align-self:start;background:white;border:1px solid #ddd;border-radius:9px;padding:16px}aside pre{padding:0;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}aside h3{margin:0 0 12px;font-size:14px}@media(max-width:850px){main{grid-template-columns:1fr;padding:12px}aside{position:static}} </style>
-<header><h1>Noctis light themes — semantic preview</h1><p>Actual rust-analyzer tokens from the included Rust fixture, styled through the pinned VS Code/Noctis mappings. Click a token to inspect its type, modifiers and source rules.</p><p>This is an HTML semantic-color preview. Native Zed layout and Tree-sitter fallback rendering require editor verification.</p><nav><button data-theme="hibernus">Hibernus Light</button><button data-theme="lilac">Lilac Light</button><button data-theme="lux">Lux Light</button></nav></header><main>''' + "".join(panels) + '''<aside><h3>Token inspector</h3><pre id="inspector">Select a colored token.</pre></aside></main><script>
+    buttons = "".join(f'<button data-theme="{e["id"]}">{html.escape(e["name"])}</button>' for e in port.CATALOG)
+    document = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Noctis semantic preview</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#f5f5f4;color:#25252b;font:15px -apple-system,BlinkMacSystemFont,sans-serif}header{padding:20px 28px;border-bottom:1px solid #ddd}h1{font-size:22px;margin:0 0 8px}p{max-width:950px;line-height:1.5;margin:6px 0}nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}button{border:1px solid #bbb;background:white;padding:9px 15px;border-radius:7px;cursor:pointer}button.active{background:#25252b;color:white}main{display:grid;grid-template-columns:minmax(400px,1fr) 360px;gap:20px;padding:20px 28px}.theme{display:none;background:var(--bg);color:var(--fg);border:1px solid #ccc;border-radius:9px;overflow:hidden}.theme.active{display:block}h2{font-size:15px;background:var(--bar);margin:0;padding:14px 20px}small{display:block;font-size:11px;font-weight:400;margin-top:4px}pre{font:14px/1.6 'Iosevka Bugen',ui-monospace,monospace;margin:0;padding:20px;overflow:auto;tab-size:4}span[data-info]:hover,span[data-info]:focus{outline:1px solid #777;outline-offset:1px}aside{position:sticky;top:20px;align-self:start;background:white;border:1px solid #ddd;border-radius:9px;padding:16px}aside pre{padding:0;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}aside h3{margin:0 0 12px;font-size:14px}@media(max-width:850px){main{grid-template-columns:1fr;padding:12px}aside{position:static}} </style>
+<header><h1>Noctis — all 11 original themes</h1><p>Actual rust-analyzer tokens from the included Rust fixture, styled through the pinned VS Code/Noctis mappings. Click a token to inspect its type, modifiers and source rules.</p><p>This is an HTML semantic-color preview. Native Zed layout and Tree-sitter fallback rendering require editor verification.</p><nav>''' + buttons + '''</nav></header><main>''' + "".join(panels) + '''<aside><h3>Token inspector</h3><pre id="inspector">Select a colored token.</pre></aside></main><script>
 function selectTheme(id){document.querySelectorAll('.theme').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.theme===id))}document.querySelectorAll('button').forEach(b=>b.onclick=()=>selectTheme(b.dataset.theme));document.querySelectorAll('[data-info]').forEach(s=>{s.onclick=()=>document.getElementById('inspector').textContent=s.dataset.info;s.onfocus=s.onclick});selectTheme('lux');</script></html>'''
     args.output.write_text(document)
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n")

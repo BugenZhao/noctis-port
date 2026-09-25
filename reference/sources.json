@@ -3,8 +3,16 @@
   "upstream": "https://github.com/liviuschera/noctis",
   "zed_version": "1.21.0",
   "files": {
-    "lilac.json": "29246e824a9ce297ba34d887939e587685d86610926fb96ec0069189d138ba8b",
+    "lux.json": "163ce628276936034a0e7043c24cda36cb87bcf4c24e49656f5f342cdcb9f0f7",
     "hibernus.json": "7091d4335910ad4b3e4f5c770b51cccd78cc81346a941c224de9f47cff7a36fc",
-    "lux.json": "163ce628276936034a0e7043c24cda36cb87bcf4c24e49656f5f342cdcb9f0f7"
+    "lilac.json": "29246e824a9ce297ba34d887939e587685d86610926fb96ec0069189d138ba8b",
+    "noctis.json": "8628899fc9c3789e2c1e57794864e219e38269689bcd586f995b11f8c6102391",
+    "azureus.json": "53d8b7f5be118ddfd9ab2558a0feffc2c66dea75bce2a5f89dcea0840e49bf48",
+    "bordo.json": "92c15d1b466f733309f4b06b0746074770df71981ef49a58defeea8f7213baa2",
+    "obscuro.json": "2ee6db830f6f0ed9eb1771e451c22db7c496f4bf2eef1d71c44ae4bab08f1a25",
+    "sereno.json": "ed151c0ba898ade4ca502de6b54b5aa5b63e56b16ec5d9d807ac9bc5ec1a384d",
+    "uva.json": "21623065dfbeff0c55559b47355eec087937998875d631f8a3fd0d7225a7859a",
+    "viola.json": "38d79f3c720281f498f97952d6fafbd059e561dc695aef9b9f6085682d96e6fd",
+    "minimus.json": "b760924e8a80ca54599ee6666baefd99e6ff5344ab579a660d06cde6a02873b9"
   }
 }
