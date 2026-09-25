@@ -6642,7 +6642,6 @@
     "error": "editorError.foreground",
     "warning": "editorWarning.foreground",
     "info": "editorInfo.foreground",
-    "hint": "editorHint.foreground",
     "error.background": "inputValidation.errorBackground",
     "error.border": "inputValidation.errorBorder",
     "warning.background": "inputValidation.warningBackground",
@@ -6667,6 +6666,7 @@
     "terminal.ansi.bright_white": "terminal.ansiBrightWhite"
   },
   "adapted_ui_roles": {
+    "hint": "descriptionForeground",
     "border.disabled": "input.border",
     "element.disabled": "sideBar.background",
     "ghost_element.disabled": "sideBar.background",

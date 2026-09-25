@@ -90,7 +90,6 @@ UI_MAP = {
     "error": "editorError.foreground",
     "warning": "editorWarning.foreground",
     "info": "editorInfo.foreground",
-    "hint": "editorHint.foreground",
     "error.background": "inputValidation.errorBackground",
     "error.border": "inputValidation.errorBorder",
     "warning.background": "inputValidation.warningBackground",
@@ -105,6 +104,8 @@ for color in ("black", "red", "green", "yellow", "blue", "magenta", "cyan", "whi
 # Zed-specific roles use documented source roles from the same palette, so a
 # fresh build cannot accidentally retain an unrelated light/dark port color.
 ADAPTED_UI_MAP = {
+    # Zed shares this role with inline Git blame; use muted auxiliary text.
+    "hint": "descriptionForeground",
     "border.disabled": "input.border",
     "element.disabled": "sideBar.background",
     "ghost_element.disabled": "sideBar.background",

@@ -163,6 +163,8 @@ Examples of Zed's native Rust mapping for all three light variants:
   use the source ANSI palette with a 24% selection tint. Both mappings are recorded
   in the audit manifest. Layout, antialiasing and font rendering are editor-specific.
   Unsupported VS Code UI roles stay in the source snapshot for future work.
+  Zed's shared `hint` foreground uses Noctis `descriptionForeground`, giving
+  inline Git blame and hint-level messages a muted auxiliary-text color.
 - **Source defect:** Lilac's original `inputValidation.infoBackground` is the
   malformed `#00c6ea599ff`. This port reproduces the pinned VS Code
   `Color.fromHex` fallback (`#ff0000`) explicitly; source files stay byte-exact.
