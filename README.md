@@ -1,3 +1,7 @@
+Hibernus Light, Lilac Light, and Lux Light are now generated from the local
+VS Code Noctis **10.40.0** source, with auditable semantic colors and font styles.
+See [light theme setup, provenance and validation](docs/light-theme-port.md).
+
 <div align="center">
 
 # Noctis theme ported from [Noctis](https://github.com/liviuschera/noctis)

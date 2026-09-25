@@ -1,0 +1,533 @@
+{
+  "vscode_version": "1.138.0",
+  "vscode_commit": "7debcd0e2acdea1c52de81bf9ee1620444407dda",
+  "rust_analyzer_extension": "0.3.3057",
+  "types": {
+    "comment": null,
+    "string": null,
+    "keyword": null,
+    "number": null,
+    "regexp": null,
+    "operator": null,
+    "namespace": null,
+    "type": null,
+    "struct": null,
+    "class": null,
+    "interface": null,
+    "enum": null,
+    "typeParameter": null,
+    "function": null,
+    "member": "method",
+    "method": null,
+    "macro": null,
+    "variable": null,
+    "parameter": null,
+    "property": null,
+    "enumMember": null,
+    "event": null,
+    "decorator": null,
+    "label": null
+  },
+  "rules": [
+    {
+      "selector": "comment",
+      "scopes": [
+        [
+          "comment"
+        ]
+      ]
+    },
+    {
+      "selector": "string",
+      "scopes": [
+        [
+          "string"
+        ]
+      ]
+    },
+    {
+      "selector": "keyword",
+      "scopes": [
+        [
+          "keyword.control"
+        ]
+      ]
+    },
+    {
+      "selector": "number",
+      "scopes": [
+        [
+          "constant.numeric"
+        ]
+      ]
+    },
+    {
+      "selector": "regexp",
+      "scopes": [
+        [
+          "constant.regexp"
+        ]
+      ]
+    },
+    {
+      "selector": "operator",
+      "scopes": [
+        [
+          "keyword.operator"
+        ]
+      ]
+    },
+    {
+      "selector": "namespace",
+      "scopes": [
+        [
+          "entity.name.namespace"
+        ]
+      ]
+    },
+    {
+      "selector": "type",
+      "scopes": [
+        [
+          "entity.name.type"
+        ],
+        [
+          "support.type"
+        ]
+      ]
+    },
+    {
+      "selector": "struct",
+      "scopes": [
+        [
+          "entity.name.type.struct"
+        ]
+      ]
+    },
+    {
+      "selector": "class",
+      "scopes": [
+        [
+          "entity.name.type.class"
+        ],
+        [
+          "support.class"
+        ]
+      ]
+    },
+    {
+      "selector": "interface",
+      "scopes": [
+        [
+          "entity.name.type.interface"
+        ]
+      ]
+    },
+    {
+      "selector": "enum",
+      "scopes": [
+        [
+          "entity.name.type.enum"
+        ]
+      ]
+    },
+    {
+      "selector": "typeParameter",
+      "scopes": [
+        [
+          "entity.name.type.parameter"
+        ]
+      ]
+    },
+    {
+      "selector": "function",
+      "scopes": [
+        [
+          "entity.name.function"
+        ],
+        [
+          "support.function"
+        ]
+      ]
+    },
+    {
+      "selector": "method",
+      "scopes": [
+        [
+          "entity.name.function.member"
+        ],
+        [
+          "support.function"
+        ]
+      ]
+    },
+    {
+      "selector": "macro",
+      "scopes": [
+        [
+          "entity.name.function.preprocessor"
+        ]
+      ]
+    },
+    {
+      "selector": "variable",
+      "scopes": [
+        [
+          "variable.other.readwrite"
+        ],
+        [
+          "entity.name.variable"
+        ]
+      ]
+    },
+    {
+      "selector": "parameter",
+      "scopes": [
+        [
+          "variable.parameter"
+        ]
+      ]
+    },
+    {
+      "selector": "property",
+      "scopes": [
+        [
+          "variable.other.property"
+        ]
+      ]
+    },
+    {
+      "selector": "enumMember",
+      "scopes": [
+        [
+          "variable.other.enummember"
+        ]
+      ]
+    },
+    {
+      "selector": "event",
+      "scopes": [
+        [
+          "variable.other.event"
+        ]
+      ]
+    },
+    {
+      "selector": "decorator",
+      "scopes": [
+        [
+          "entity.name.decorator"
+        ],
+        [
+          "entity.name.function"
+        ]
+      ]
+    },
+    {
+      "selector": "variable.readonly",
+      "scopes": [
+        [
+          "variable.other.constant"
+        ]
+      ]
+    },
+    {
+      "selector": "property.readonly",
+      "scopes": [
+        [
+          "variable.other.constant.property"
+        ]
+      ]
+    },
+    {
+      "selector": "type.defaultLibrary",
+      "scopes": [
+        [
+          "support.type"
+        ]
+      ]
+    },
+    {
+      "selector": "class.defaultLibrary",
+      "scopes": [
+        [
+          "support.class"
+        ]
+      ]
+    },
+    {
+      "selector": "interface.defaultLibrary",
+      "scopes": [
+        [
+          "support.class"
+        ]
+      ]
+    },
+    {
+      "selector": "variable.defaultLibrary",
+      "scopes": [
+        [
+          "support.variable"
+        ],
+        [
+          "support.other.variable"
+        ]
+      ]
+    },
+    {
+      "selector": "variable.defaultLibrary.readonly",
+      "scopes": [
+        [
+          "support.constant"
+        ]
+      ]
+    },
+    {
+      "selector": "property.defaultLibrary",
+      "scopes": [
+        [
+          "support.variable.property"
+        ]
+      ]
+    },
+    {
+      "selector": "property.defaultLibrary.readonly",
+      "scopes": [
+        [
+          "support.constant.property"
+        ]
+      ]
+    },
+    {
+      "selector": "function.defaultLibrary",
+      "scopes": [
+        [
+          "support.function"
+        ]
+      ]
+    },
+    {
+      "selector": "member.defaultLibrary",
+      "scopes": [
+        [
+          "support.function"
+        ]
+      ]
+    }
+  ],
+  "rust": {
+    "types": {
+      "angle": "punctuation",
+      "arithmetic": "operator",
+      "attribute": null,
+      "attributeBracket": "punctuation",
+      "bitwise": "operator",
+      "boolean": "keyword",
+      "brace": "punctuation",
+      "bracket": "punctuation",
+      "builtinAttribute": "attribute",
+      "builtinType": "type",
+      "character": "string",
+      "colon": "punctuation",
+      "comma": "punctuation",
+      "comparison": "operator",
+      "constParameter": null,
+      "const": "variable",
+      "derive": "attribute",
+      "deriveHelper": "attribute",
+      "dot": "punctuation",
+      "escapeSequence": null,
+      "formatSpecifier": null,
+      "invalidEscapeSequence": null,
+      "label": null,
+      "lifetime": null,
+      "logical": "operator",
+      "macroBang": "punctuation",
+      "parenthesis": "punctuation",
+      "procMacro": "macro",
+      "punctuation": null,
+      "operator": "punctuation",
+      "selfKeyword": "keyword",
+      "selfTypeKeyword": "keyword",
+      "semicolon": "punctuation",
+      "static": "variable",
+      "toolModule": "decorator",
+      "typeAlias": "type",
+      "union": "type",
+      "unresolvedReference": null
+    },
+    "rules": [
+      {
+        "selector": "attribute",
+        "scopes": [
+          [
+            "meta.attribute.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "boolean",
+        "scopes": [
+          [
+            "constant.language.boolean.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "builtinType",
+        "scopes": [
+          [
+            "support.type.primitive.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "constParameter",
+        "scopes": [
+          [
+            "constant.other.caps.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "enum",
+        "scopes": [
+          [
+            "entity.name.type.enum.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "formatSpecifier",
+        "scopes": [
+          [
+            "punctuation.section.embedded.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "function",
+        "scopes": [
+          [
+            "entity.name.function.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "interface",
+        "scopes": [
+          [
+            "entity.name.type.trait.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "keyword",
+        "scopes": [
+          [
+            "keyword.other.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "keyword.controlFlow",
+        "scopes": [
+          [
+            "keyword.control.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "lifetime",
+        "scopes": [
+          [
+            "storage.modifier.lifetime.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "macroBang",
+        "scopes": [
+          [
+            "entity.name.function.macro.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "method",
+        "scopes": [
+          [
+            "entity.name.function.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "struct",
+        "scopes": [
+          [
+            "entity.name.type.struct.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "typeAlias",
+        "scopes": [
+          [
+            "entity.name.type.declaration.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "union",
+        "scopes": [
+          [
+            "entity.name.type.union.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "variable",
+        "scopes": [
+          [
+            "variable.other.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "variable.constant",
+        "scopes": [
+          [
+            "variable.other.constant.rust"
+          ]
+        ],
+        "language": "rust"
+      },
+      {
+        "selector": "*.mutable",
+        "scopes": [
+          [
+            "markup.underline"
+          ]
+        ],
+        "language": "rust"
+      }
+    ]
+  }
+}

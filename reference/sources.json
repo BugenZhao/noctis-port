@@ -1,0 +1,10 @@
+{
+  "noctis_version": "10.40.0",
+  "upstream": "https://github.com/liviuschera/noctis",
+  "zed_version": "1.21.0",
+  "files": {
+    "lilac.json": "29246e824a9ce297ba34d887939e587685d86610926fb96ec0069189d138ba8b",
+    "hibernus.json": "7091d4335910ad4b3e4f5c770b51cccd78cc81346a941c224de9f47cff7a36fc",
+    "lux.json": "163ce628276936034a0e7043c24cda36cb87bcf4c24e49656f5f342cdcb9f0f7"
+  }
+}

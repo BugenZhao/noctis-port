@@ -1,2 +1,5 @@
 /ref
 .DS_Store
+__pycache__/
+/examples/rust/target/
+/preview-data/
