@@ -96,8 +96,10 @@ Other themes fall through to their native styles when these names are absent.
 The literal `mut` keyword keeps Zed's native keyword mapping; the semantic
 `mutable` modifier describes the referenced symbol's mutability.
 
-The HTML and isolated previews include these three rules. All other routing
-uses Zed's built-in mappings.
+The HTML and isolated previews include these three rules. In the HTML side
+panel, **Enable custom rules** toggles all three together and immediately updates
+both the code and selected token inspector. The toggle stays in its chosen mode
+when switching themes. All other routing uses Zed's built-in mappings.
 
 ## Isolated preview
 

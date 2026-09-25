@@ -169,41 +169,81 @@ def main():
         variant = entry["id"]
         theme = json.loads((port.ROOT / "themes" / entry["file"]).read_text())["themes"][0]
         syntax = theme["style"]["syntax"]
-        parts, previous, mapped = [], 0, 0
-        for token in tokens:
+        parts, previous, mapped, changed = [], 0, 0, 0
+        for index, token in enumerate(tokens):
             assert token["start"] >= previous, "Overlapping tokens need a different renderer"
             parts.append(html.escape(source[previous:token["start"]]))
-            actual = zed.render(syntax, port.MUT_SELF_RULES + zed.builtin_rules(True), token["type"], token["modifiers"]) or {}
-            provenance = []
-            for rule in port.MUT_SELF_RULES + zed.builtin_rules(True):
-                if rule.get("token_type") not in (None, token["type"]):
-                    continue
-                if not set(rule.get("token_modifiers", [])) <= set(token["modifiers"]):
-                    continue
-                name = next((n for n in rule.get("style", []) if n in syntax), None)
-                if name:
-                    provenance.append({"zed_rule": rule, "theme_style": name,
-                                       "noctis_source": mapping[theme["name"]]["captures"].get(name)})
-            if actual:
-                mapped += 1
-            style = []
-            for k, css in [("color", "color"), ("font_style", "font-style"), ("font_weight", "font-weight")]:
-                if k in actual:
-                    style.append(f"{css}:{actual[k]}")
-            info = json.dumps({"token": token["text"], "type": token["type"], "modifiers": token["modifiers"],
-                               "style": actual, "source": provenance}, ensure_ascii=False, indent=2)
-            parts.append(f'<span tabindex="0" data-info="{html.escape(info, quote=True)}" style="{";".join(style)}">{html.escape(token["text"])}</span>')
+            profiles = {}
+            for mode, rules in [("native", zed.builtin_rules(True)),
+                                ("custom", port.MUT_SELF_RULES + zed.builtin_rules(True))]:
+                actual = zed.render(syntax, rules, token["type"], token["modifiers"]) or {}
+                assert actual, (theme["name"], mode, token)
+                provenance = []
+                for rule in rules:
+                    if rule.get("token_type") not in (None, token["type"]):
+                        continue
+                    if not set(rule.get("token_modifiers", [])) <= set(token["modifiers"]):
+                        continue
+                    name = next((n for n in rule.get("style", []) if n in syntax), None)
+                    if name:
+                        provenance.append({"zed_rule": rule, "theme_style": name,
+                                           "noctis_source": mapping[theme["name"]]["captures"].get(name)})
+                css = ";".join(f"{key.replace('_', '-')}:{value}" for key, value in actual.items()
+                               if key in ("color", "font_style", "font_weight"))
+                profiles[mode] = {"css": css, "info": {
+                    "mode": "Custom rules on" if mode == "custom" else "Zed defaults",
+                    "token": token["text"], "type": token["type"], "modifiers": token["modifiers"],
+                    "style": actual, "source": provenance,
+                }}
+            mapped += 1
+            changed += profiles["native"]["info"]["style"] != profiles["custom"]["info"]["style"]
+            data = html.escape(json.dumps(profiles, ensure_ascii=False, separators=(",", ":")), quote=True)
+            parts.append(f'<span tabindex="0" data-token="{index}" data-variants="{data}" style="{profiles["custom"]["css"]}">{html.escape(token["text"])}</span>')
             previous = token["end"]
         parts.append(html.escape(source[previous:]))
         s = theme["style"]
-        panels.append(f'<section id="{variant}" class="theme" style="--bg:{s["editor.background"]};--fg:{s["editor.foreground"]};--bar:{s["tab_bar.background"]};--muted:{s["editor.line_number"]}"><h2>{theme["name"]}<small>Noctis {port.SOURCES["noctis_version"]} · {entry["appearance"]} · rust-analyzer semantic tokens</small></h2><pre>{"".join(parts)}</pre></section>')
+        panels.append(f'<section id="{variant}" class="theme" data-changed="{changed}" data-total="{len(tokens)}" style="--bg:{s["editor.background"]};--fg:{s["editor.foreground"]};--bar:{s["tab_bar.background"]};--muted:{s["editor.line_number"]}"><h2>{theme["name"]}<small>Noctis {port.SOURCES["noctis_version"]} · {entry["appearance"]} · rust-analyzer semantic tokens</small></h2><pre>{"".join(parts)}</pre></section>')
         assert mapped == len(tokens), (theme["name"], mapped, len(tokens))
-        summary["theme_checks"][theme["name"]] = {"tokens": len(tokens), "mapped_tokens": mapped}
+        summary["theme_checks"][theme["name"]] = {"tokens": len(tokens), "mapped_tokens": mapped, "changed_tokens": changed}
     buttons = "".join(f'<button data-theme="{e["id"]}">{html.escape(e["name"])}</button>' for e in port.CATALOG)
     document = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Noctis semantic preview</title>
-<style>*{box-sizing:border-box}body{margin:0;background:#f5f5f4;color:#25252b;font:15px -apple-system,BlinkMacSystemFont,sans-serif}header{padding:20px 28px;border-bottom:1px solid #ddd}h1{font-size:22px;margin:0 0 8px}p{max-width:950px;line-height:1.5;margin:6px 0}nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}button{border:1px solid #bbb;background:white;padding:9px 15px;border-radius:7px;cursor:pointer}button.active{background:#25252b;color:white}main{display:grid;grid-template-columns:minmax(400px,1fr) 360px;gap:20px;padding:20px 28px}.theme{display:none;background:var(--bg);color:var(--fg);border:1px solid #ccc;border-radius:9px;overflow:hidden}.theme.active{display:block}h2{font-size:15px;background:var(--bar);margin:0;padding:14px 20px}small{display:block;font-size:11px;font-weight:400;margin-top:4px}pre{font:14px/1.6 'Iosevka Bugen',ui-monospace,monospace;margin:0;padding:20px;overflow:auto;tab-size:4}span[data-info]:hover,span[data-info]:focus{outline:1px solid #777;outline-offset:1px}aside{position:sticky;top:20px;align-self:start;background:white;border:1px solid #ddd;border-radius:9px;padding:16px}aside pre{padding:0;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}aside h3{margin:0 0 12px;font-size:14px}@media(max-width:850px){main{grid-template-columns:1fr;padding:12px}aside{position:static}} </style>
-<header><h1>Noctis — all 11 original themes</h1><p><a href="https://github.com/BugenZhao/noctis-port">GitHub repository</a> · <a href="https://github.com/BugenZhao/noctis-port#install">Install in Zed</a> · <a href="https://github.com/BugenZhao/noctis-port/blob/main/docs/theme-port.md">Semantic setup and source mappings</a></p><p>Actual rust-analyzer tokens → Zed 1.21 built-in Rust and default mappings → Noctis theme styles. Three optional rules refine mutable tokens, self and Self. Click a token to inspect the full mapping and source colors.</p><p>This is an HTML semantic-color preview. Native Zed layout and Tree-sitter fallback rendering require editor verification.</p><nav>''' + buttons + '''</nav></header><main>''' + "".join(panels) + '''<aside><h3>Token inspector</h3><pre id="inspector">Select a colored token.</pre></aside></main><script>
-function selectTheme(id){document.querySelectorAll('.theme').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.theme===id))}document.querySelectorAll('button').forEach(b=>b.onclick=()=>selectTheme(b.dataset.theme));document.querySelectorAll('[data-info]').forEach(s=>{s.onclick=()=>document.getElementById('inspector').textContent=s.dataset.info;s.onfocus=s.onclick});selectTheme('lux');</script></html>'''
+<style>*{box-sizing:border-box}body{margin:0;background:#f5f5f4;color:#25252b;font:15px -apple-system,BlinkMacSystemFont,sans-serif}header{padding:20px 28px;border-bottom:1px solid #ddd}h1{font-size:22px;margin:0 0 8px}p{max-width:950px;line-height:1.5;margin:6px 0}nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}button{border:1px solid #bbb;background:white;padding:9px 15px;border-radius:7px;cursor:pointer}button.active{background:#25252b;color:white}main{display:grid;grid-template-columns:minmax(400px,1fr) 360px;gap:20px;padding:20px 28px}.theme{display:none;background:var(--bg);color:var(--fg);border:1px solid #ccc;border-radius:9px;overflow:hidden}.theme.active{display:block}h2{font-size:15px;background:var(--bar);margin:0;padding:14px 20px}small{display:block;font-size:11px;font-weight:400;margin-top:4px}pre{font:14px/1.6 'Iosevka Bugen',ui-monospace,monospace;margin:0;padding:20px;overflow:auto;tab-size:4}span[data-variants]:hover,span[data-variants]:focus{outline:1px solid #777;outline-offset:1px}aside{position:sticky;top:20px;align-self:start;background:white;border:1px solid #ddd;border-radius:9px;padding:16px}aside pre{padding:0;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}aside h3{margin:0 0 12px;font-size:14px}.rule-toggle{display:flex;align-items:center;gap:10px;font-weight:600;cursor:pointer}.rule-toggle input{width:18px;height:18px;accent-color:#25252b}.rule-help{font-size:13px;color:#555;margin:10px 0}.rule-status{font-size:13px;margin:8px 0 18px;padding-bottom:16px;border-bottom:1px solid #ddd}@media(max-width:850px){aside{grid-row:1}}@media(max-width:850px){main{grid-template-columns:1fr;padding:12px}aside{position:static}} </style>
+<header><h1>Noctis — all 11 original themes</h1><p><a href="https://github.com/BugenZhao/noctis-port">GitHub repository</a> · <a href="https://github.com/BugenZhao/noctis-port#install">Install in Zed</a> · <a href="https://github.com/BugenZhao/noctis-port/blob/main/docs/theme-port.md">Semantic setup and source mappings</a></p><p>Actual rust-analyzer tokens → Zed 1.21 built-in Rust and default mappings → Noctis theme styles. Toggle the three custom rules in the side panel to compare mutable tokens, self and Self. Click a token to inspect the full mapping and source colors.</p><p>This is an HTML semantic-color preview. Native Zed layout and Tree-sitter fallback rendering require editor verification.</p><nav>''' + buttons + '''</nav></header><main>''' + "".join(panels) + '''<aside><h3>Highlighting</h3><label class="rule-toggle" for="custom-rules"><input id="custom-rules" type="checkbox" checked aria-describedby="rule-help rule-status">Enable custom rules</label><p class="rule-help" id="rule-help">Mutable tokens, self and Self. Turn off to compare Zed defaults.</p><p class="rule-status" id="rule-status" role="status" aria-live="polite"></p><h3>Token inspector</h3><pre id="inspector">Select a colored token.</pre></aside></main><script>
+const toggle = document.getElementById('custom-rules');
+const inspector = document.getElementById('inspector');
+const spans = [...document.querySelectorAll('[data-variants]')];
+const profiles = new Map(spans.map(span => [span, JSON.parse(span.dataset.variants)]));
+let selectedToken = null;
+function mode() { return toggle.checked ? 'custom' : 'native'; }
+function updateInspector() {
+  const token = selectedToken === null ? null : document.querySelector('.theme.active [data-token="' + selectedToken + '"]');
+  inspector.textContent = token ? JSON.stringify(profiles.get(token)[mode()].info, null, 2) : 'Select a colored token.';
+}
+function updateStatus() {
+  const panel = document.querySelector('.theme.active');
+  document.getElementById('rule-status').textContent = (toggle.checked ? 'Custom rules on' : 'Zed defaults') + ' · ' + panel.dataset.changed + ' of ' + panel.dataset.total + ' tokens differ between modes.';
+}
+function selectTheme(id) {
+  document.querySelectorAll('.theme').forEach(panel => panel.classList.toggle('active', panel.id === id));
+  document.querySelectorAll('button[data-theme]').forEach(button => {
+    const active = button.dataset.theme === id;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  updateInspector();
+  updateStatus();
+}
+toggle.addEventListener('change', () => {
+  spans.forEach(span => { span.style.cssText = profiles.get(span)[mode()].css; });
+  updateInspector();
+  updateStatus();
+});
+document.querySelectorAll('button[data-theme]').forEach(button => { button.onclick = () => selectTheme(button.dataset.theme); });
+spans.forEach(span => {
+  span.onclick = span.onfocus = () => { selectedToken = span.dataset.token; updateInspector(); };
+});
+selectTheme('lux');
+</script></html>'''
     args.output.write_text(document)
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))

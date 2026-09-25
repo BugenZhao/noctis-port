@@ -9,6 +9,8 @@ syntax colors, and LSP semantic styles.
 
 The preview lets you switch palettes and click Rust tokens to inspect their
 types, modifiers, Zed mapping rules, theme styles, and original Noctis colors.
+Use **Enable custom rules** in the side panel to compare Zed defaults with the
+three mutable/self refinements; the selected token inspector follows the toggle.
 
 The original [Noctis](https://github.com/liviuschera/noctis) is by Liviu Schera;
 this fork builds on [Siddha Wachche’s Zed port](https://github.com/sidwachche/noctis-port).
