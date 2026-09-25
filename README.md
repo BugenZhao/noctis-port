@@ -51,6 +51,12 @@ can stay in your settings.
 
 For an earlier installation, remove rules whose `style` names start with
 `noctis.rust.` or `noctis.semantic.`. Keep semantic highlighting enabled.
+For mutable tokens and Rust `self` / `Self`, append the **three rules** in
+[mut-self-semantic.json](settings/mut-self-semantic.json) after your personal
+rules. This optional preset adds Noctis's mutable color and self styling while
+preserving the native mapping for other tokens. The online and isolated previews
+include this preset.
+
 A language-server restart may be needed after enabling semantic tokens.
 
 [Setup and native mapping details](docs/theme-port.md) documents the source

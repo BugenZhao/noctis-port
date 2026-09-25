@@ -1,0 +1,26 @@
+{
+  "global_lsp_settings": {
+    "semantic_token_rules": [
+      {
+        "token_modifiers": [
+          "mutable"
+        ],
+        "style": [
+          "noctis.mutable"
+        ]
+      },
+      {
+        "token_type": "selfKeyword",
+        "style": [
+          "noctis.self"
+        ]
+      },
+      {
+        "token_type": "selfTypeKeyword",
+        "style": [
+          "noctis.self"
+        ]
+      }
+    ]
+  }
+}

@@ -579,6 +579,23 @@
           "rules": {
             "foreground": "MISC"
           }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
+          }
         }
       }
     },
@@ -1159,6 +1176,23 @@
           ],
           "rules": {
             "foreground": "MISC"
+          }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
           }
         }
       }
@@ -1741,6 +1775,23 @@
           "rules": {
             "foreground": "MISC"
           }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
+          }
         }
       }
     },
@@ -2321,6 +2372,23 @@
           ],
           "rules": {
             "foreground": "MISC"
+          }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
           }
         }
       }
@@ -2903,6 +2971,23 @@
           "rules": {
             "foreground": "MISC"
           }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
+          }
         }
       }
     },
@@ -3483,6 +3568,23 @@
           ],
           "rules": {
             "foreground": "MISC"
+          }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
           }
         }
       }
@@ -4065,6 +4167,23 @@
           "rules": {
             "foreground": "MISC"
           }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
+          }
         }
       }
     },
@@ -4645,6 +4764,23 @@
           ],
           "rules": {
             "foreground": "MISC"
+          }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
           }
         }
       }
@@ -5227,6 +5363,23 @@
           "rules": {
             "foreground": "MISC"
           }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
+          }
         }
       }
     },
@@ -5808,6 +5961,23 @@
           "rules": {
             "foreground": "MISC"
           }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
+          }
         }
       }
     },
@@ -6388,6 +6558,23 @@
           ],
           "rules": {
             "foreground": "MISC"
+          }
+        },
+        "noctis.mutable": {
+          "scopes": [
+            "markup.underline"
+          ],
+          "rules": {
+            "foreground": "SUPPORT"
+          }
+        },
+        "noctis.self": {
+          "scopes": [
+            "keyword.other.rust"
+          ],
+          "rules": {
+            "foreground": "TAG",
+            "fontStyle": "NORMAL"
           }
         }
       }

@@ -98,7 +98,7 @@ class ThemeTests(unittest.TestCase):
             for value in re.findall(r'"(#[^"]+)"', json.dumps(theme)):
                 self.assertRegex(value, r"^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$")
             syntax = theme["style"]["syntax"]
-            self.assertFalse(any(name.startswith("noctis.") for name in syntax))
+            self.assertEqual({name for name in syntax if name.startswith("noctis.")}, set(port.MUT_SELF_PROBES))
             for rule in zed.builtin_rules(True):
                 self.assertTrue(any(name in syntax for name in rule["style"]), rule)
 
@@ -111,6 +111,32 @@ class ThemeTests(unittest.TestCase):
                 self.assertEqual(zed.render(syntax, zed.builtin_rules(True), token, []), syntax[capture])
             self.assertEqual(zed.render(syntax, zed.builtin_rules(True), "keyword", ["controlFlow"]), syntax["keyword"])
             self.assertEqual(zed.render(syntax, zed.builtin_rules(True), "variable", ["mutable"]), syntax["variable"])
+
+    def test_mutable_self_refinements_preserve_native_chain(self):
+        personal = {"token_type": "unresolvedReference", "foreground_color": "#c93f3fff",
+                    "font_weight": "bold", "font_style": "normal"}
+        for entry in port.CATALOG:
+            syntax = json.loads((port.ROOT / "themes" / entry["file"]).read_text())["themes"][0]["style"]["syntax"]
+            source = json.loads((port.SOURCE_DIR / entry["source"]).read_text())
+            self.assertEqual(set(syntax["noctis.mutable"]), {"color"})
+            self.assertEqual(syntax["noctis.mutable"]["color"], port.semantic_style(source, "variable", ["mutable"], True)[0]["color"])
+            for token, combos in zed.domain(port.MUT_SELF_RULES + zed.builtin_rules(True)):
+                for mods in combos:
+                    before = zed.render(syntax, zed.builtin_rules(True), token, mods)
+                    expected = dict(before or {})
+                    if token in ("selfKeyword", "selfTypeKeyword"):
+                        expected.update(port.semantic_style(source, token, [], True)[0])
+                    if "mutable" in mods:
+                        expected.update(syntax["noctis.mutable"])
+                    self.assertEqual(zed.render(syntax, port.MUT_SELF_RULES + zed.builtin_rules(True), token, mods), expected)
+            self.assertEqual(zed.render(syntax, [personal] + port.MUT_SELF_RULES + zed.builtin_rules(True),
+                                        "unresolvedReference", ["mutable"]),
+                             {"color": "#c93f3fff", "font_style": "normal", "font_weight": 700})
+            # Other themes fall through when these optional style names are absent.
+            native = {k: v for k, v in syntax.items() if not k.startswith("noctis.")}
+            for token in ("variable", "parameter", "selfKeyword", "selfTypeKeyword"):
+                self.assertEqual(zed.render(native, port.MUT_SELF_RULES + zed.builtin_rules(True), token, ["mutable"]),
+                                 zed.render(native, zed.builtin_rules(True), token, ["mutable"]))
 
     def test_catalog_matches_vscode_manifest_exactly(self):
         package = json.loads((port.SOURCE_DIR / "package-themes.json").read_text())

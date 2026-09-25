@@ -19,6 +19,14 @@ SOURCE_DIR = ROOT / "reference" / ("noctis-" + SOURCES["noctis_version"])
 VARIANTS = tuple(entry["id"] for entry in CATALOG)
 SEMANTICS = json.loads((ROOT / "reference/semantic-scopes.json").read_text())
 
+# Optional refinements over the native chain. Earlier rules win per property.
+MUT_SELF_RULES = [
+    {"token_modifiers": ["mutable"], "style": ["noctis.mutable"]},
+    {"token_type": "selfKeyword", "style": ["noctis.self"]},
+    {"token_type": "selfTypeKeyword", "style": ["noctis.self"]},
+]
+MUT_SELF_PROBES = {"noctis.mutable": "markup.underline", "noctis.self": "keyword.other.rust"}
+
 # Zed UI roles with an explicit counterpart in the original VS Code theme.
 UI_MAP = {
     "border": "editorGroup.border",
@@ -365,11 +373,17 @@ def generate():
             syntax[capture] = {"color": color(source["colors"]["editor.foreground"]),
                                "font_style": "normal", "font_weight": 400, **resolved}
             capture_sources[capture] = provenance
+        for name, probe in MUT_SELF_PROBES.items():
+            # Mutable supplies only color, preserving the native font styling.
+            syntax[name], capture_sources[name] = resolve_scopes(source, [[probe]])
         style["syntax"] = syntax
         outputs[path] = target
         manifest["themes"][theme["name"]] = {"source": str((SOURCE_DIR / catalog_entry["source"]).relative_to(ROOT)),
                                               "captures": capture_sources}
     outputs[ROOT / "reference/generated-mapping.json"] = manifest
+    outputs[ROOT / "settings/mut-self-semantic.json"] = {
+        "global_lsp_settings": {"semantic_token_rules": MUT_SELF_RULES},
+    }
     return outputs
 
 

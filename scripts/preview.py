@@ -39,6 +39,7 @@ if args.rust_analyzer:
         "binary": {"path": str(args.rust_analyzer.resolve())},
         "initialization_options": {"checkOnSave": False},
     }}
+settings.update(json.loads((ROOT / "settings/mut-self-semantic.json").read_text()))
 (config / "settings.json").write_text(json.dumps(settings, indent=2) + "\n")
 command = ["zed", "--foreground", "--user-data-dir", str(args.data_dir.resolve()), "-n",
            str(ROOT / "examples/rust"), str(ROOT / "examples/rust/src/main.rs")]

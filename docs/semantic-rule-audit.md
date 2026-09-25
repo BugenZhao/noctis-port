@@ -3,13 +3,15 @@
 ## Adopted behavior
 
 The theme now uses **Zed's native LSP → language/default mappings → theme
-styles** chain, with **zero custom Noctis rules**. Zed/VS Code mapping differences
+styles** chain. Its optional **three-rule mutable/self preset** adds the two requested
+refinements while keeping other tokens on native mappings. Zed/VS Code mapping differences
 are accepted. The 133-rule parity profile and its generated custom style names
 have been removed; personal overrides remain independent.
 
 The source audit below explains the previous parity profile's behavior. Its
 safe-deletion experiment is historical evidence; the adopted native chain uses
-all built-in mappings directly.
+built-in mappings as its baseline. The HTML preview additionally enables the
+mutable/self preset documented in [the setup guide](theme-port.md#optional-mutable-and-self-refinements).
 
 Audited on 2026-09-25 against the installed Zed 1.21.0, all 11 generated Noctis
 themes, and the former semantic profiles. This audit holds the theme files

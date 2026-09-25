@@ -70,6 +70,35 @@ versions supplied generated `noctis.rust.*` / `noctis.semantic.*` routing rules;
 remove those rules from your settings when upgrading. Keep personal overrides
 such as an unresolved-reference color rule.
 
+## Optional mutable and self refinements
+
+Append the three rules in [mut-self-semantic.json](../settings/mut-self-semantic.json)
+to `global_lsp_settings.semantic_token_rules`, after personal overrides:
+
+```json
+[
+  { "token_modifiers": ["mutable"], "style": ["noctis.mutable"] },
+  { "token_type": "selfKeyword", "style": ["noctis.self"] },
+  { "token_type": "selfTypeKeyword", "style": ["noctis.self"] }
+]
+```
+
+`noctis.mutable` takes its color from Noctis's `markup.underline` scope and
+preserves the token's existing font style. It applies to every token the server
+marks mutable, including variables, parameters, fields and methods.
+`noctis.self` uses `keyword.other.rust`, restoring `self` and `Self` to the source
+keyword color and regular font. With `&mut self`, the first rule wins for color,
+and the self rule supplies font styling.
+
+Rules are global in Zed 1.21: the mutable refinement also applies to other
+languages that report that modifier. All 11 themes supply the two styles.
+Other themes fall through to their native styles when these names are absent.
+The literal `mut` keyword keeps Zed's native keyword mapping; the semantic
+`mutable` modifier describes the referenced symbol's mutability.
+
+The HTML and isolated previews include these three rules. All other routing
+uses Zed's built-in mappings.
+
 ## Isolated preview
 
 ```sh
@@ -77,7 +106,7 @@ python3 scripts/preview.py --theme 'Noctis Minimus'
 ```
 
 This opens `examples/rust` in a separate Zed data/configuration directory under
-`preview-data/`. The preview enables semantic tokens and uses Zed's built-in mappings; your normal settings, extensions and session data stay in their normal
+`preview-data/`. The preview enables semantic tokens and the optional mutable/self refinements; your normal settings, extensions and session data stay in their normal
 directory. Use `--rust-analyzer /absolute/path/to/rust-analyzer` to reuse a
 particular installed binary. `--prepare-only` writes the isolated profile without
 launching Zed. The launcher sets `ZED_STATELESS=1` for the preview process to

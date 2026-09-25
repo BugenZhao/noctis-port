@@ -163,8 +163,8 @@ def main():
     panels = []
     mapping = json.loads((port.ROOT / "reference/generated-mapping.json").read_text())["themes"]
     summary = {"server": str(args.rust_analyzer), "token_count": len(tokens),
-               "token_types": dict(categories), "mapping": "Zed 1.21.0 built-in Rust + default rules",
-               "custom_theme_rules": 0, "theme_checks": {}, "native_zed_rendering": "not_verified"}
+               "token_types": dict(categories), "mapping": "Zed 1.21.0 built-in rules + mutable/self refinements",
+               "custom_theme_rules": len(port.MUT_SELF_RULES), "theme_checks": {}, "native_zed_rendering": "not_verified"}
     for entry in port.CATALOG:
         variant = entry["id"]
         theme = json.loads((port.ROOT / "themes" / entry["file"]).read_text())["themes"][0]
@@ -173,9 +173,9 @@ def main():
         for token in tokens:
             assert token["start"] >= previous, "Overlapping tokens need a different renderer"
             parts.append(html.escape(source[previous:token["start"]]))
-            actual = zed.render(syntax, zed.builtin_rules(True), token["type"], token["modifiers"]) or {}
+            actual = zed.render(syntax, port.MUT_SELF_RULES + zed.builtin_rules(True), token["type"], token["modifiers"]) or {}
             provenance = []
-            for rule in zed.builtin_rules(True):
+            for rule in port.MUT_SELF_RULES + zed.builtin_rules(True):
                 if rule.get("token_type") not in (None, token["type"]):
                     continue
                 if not set(rule.get("token_modifiers", [])) <= set(token["modifiers"]):
@@ -202,7 +202,7 @@ def main():
     buttons = "".join(f'<button data-theme="{e["id"]}">{html.escape(e["name"])}</button>' for e in port.CATALOG)
     document = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Noctis semantic preview</title>
 <style>*{box-sizing:border-box}body{margin:0;background:#f5f5f4;color:#25252b;font:15px -apple-system,BlinkMacSystemFont,sans-serif}header{padding:20px 28px;border-bottom:1px solid #ddd}h1{font-size:22px;margin:0 0 8px}p{max-width:950px;line-height:1.5;margin:6px 0}nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}button{border:1px solid #bbb;background:white;padding:9px 15px;border-radius:7px;cursor:pointer}button.active{background:#25252b;color:white}main{display:grid;grid-template-columns:minmax(400px,1fr) 360px;gap:20px;padding:20px 28px}.theme{display:none;background:var(--bg);color:var(--fg);border:1px solid #ccc;border-radius:9px;overflow:hidden}.theme.active{display:block}h2{font-size:15px;background:var(--bar);margin:0;padding:14px 20px}small{display:block;font-size:11px;font-weight:400;margin-top:4px}pre{font:14px/1.6 'Iosevka Bugen',ui-monospace,monospace;margin:0;padding:20px;overflow:auto;tab-size:4}span[data-info]:hover,span[data-info]:focus{outline:1px solid #777;outline-offset:1px}aside{position:sticky;top:20px;align-self:start;background:white;border:1px solid #ddd;border-radius:9px;padding:16px}aside pre{padding:0;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}aside h3{margin:0 0 12px;font-size:14px}@media(max-width:850px){main{grid-template-columns:1fr;padding:12px}aside{position:static}} </style>
-<header><h1>Noctis — all 11 original themes</h1><p><a href="https://github.com/BugenZhao/noctis-port">GitHub repository</a> · <a href="https://github.com/BugenZhao/noctis-port#install">Install in Zed</a> · <a href="https://github.com/BugenZhao/noctis-port/blob/main/docs/theme-port.md">Semantic setup and source mappings</a></p><p>Actual rust-analyzer tokens → Zed 1.21 built-in Rust and default mappings → Noctis theme styles. Zero custom theme rules. Click a token to inspect the full mapping and source colors.</p><p>This is an HTML semantic-color preview. Native Zed layout and Tree-sitter fallback rendering require editor verification.</p><nav>''' + buttons + '''</nav></header><main>''' + "".join(panels) + '''<aside><h3>Token inspector</h3><pre id="inspector">Select a colored token.</pre></aside></main><script>
+<header><h1>Noctis — all 11 original themes</h1><p><a href="https://github.com/BugenZhao/noctis-port">GitHub repository</a> · <a href="https://github.com/BugenZhao/noctis-port#install">Install in Zed</a> · <a href="https://github.com/BugenZhao/noctis-port/blob/main/docs/theme-port.md">Semantic setup and source mappings</a></p><p>Actual rust-analyzer tokens → Zed 1.21 built-in Rust and default mappings → Noctis theme styles. Three optional rules refine mutable tokens, self and Self. Click a token to inspect the full mapping and source colors.</p><p>This is an HTML semantic-color preview. Native Zed layout and Tree-sitter fallback rendering require editor verification.</p><nav>''' + buttons + '''</nav></header><main>''' + "".join(panels) + '''<aside><h3>Token inspector</h3><pre id="inspector">Select a colored token.</pre></aside></main><script>
 function selectTheme(id){document.querySelectorAll('.theme').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.theme===id))}document.querySelectorAll('button').forEach(b=>b.onclick=()=>selectTheme(b.dataset.theme));document.querySelectorAll('[data-info]').forEach(s=>{s.onclick=()=>document.getElementById('inspector').textContent=s.dataset.info;s.onfocus=s.onclick});selectTheme('lux');</script></html>'''
     args.output.write_text(document)
     args.output.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n")

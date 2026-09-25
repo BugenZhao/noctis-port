@@ -59,8 +59,8 @@ impl SemanticTokenStylizer {
     }
 }
 fn strings(v: &[&str]) -> Vec<String> { v.iter().map(|s| s.to_string()).collect() }
-fn r(token: &str, modifiers: &[&str], style: &[&str]) -> SemanticTokenRule {
-    SemanticTokenRule { token_type: Some(token.to_string()), token_modifiers: strings(modifiers),
+fn r(token: Option<&str>, modifiers: &[&str], style: &[&str]) -> SemanticTokenRule {
+    SemanticTokenRule { token_type: token.map(str::to_string), token_modifiers: strings(modifiers),
                         style: strings(style), ..Default::default() }
 }
 fn h(color: Option<u32>, font: Option<FontStyle>, weight: Option<FontWeight>) -> HighlightStyle {
@@ -85,15 +85,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--work-dir", type=Path, required=True)
+    parser.add_argument("--focused-only", action="store_true", help="Check native and mutable/self profiles")
     args = parser.parse_args()
     assert hashlib.sha256(args.source.read_bytes()).hexdigest() == SOURCE_SHA256
     source = args.source.read_text()
     convert = source[source.index("fn convert_token("):source.index("\n#[cfg(test)]\nmod tests")]
     code = [STUBS, convert, "fn main() { let mut count = 0;"]
     for rust in (False, True):
-        report = audit.audit(rust)
-        flavor = report["profile"]
-        original = audit.legacy_rules(rust)
+        report = audit.audit(rust) if not args.focused_only else None
+        original = audit.legacy_rules(rust) if report else port.MUT_SELF_RULES
         builtins = audit.builtin_rules(rust)
         modifiers = sorted({m for r in original + builtins for m in r.get("token_modifiers", [])})
         for entry in port.CATALOG:
@@ -102,12 +102,13 @@ def main():
             for name, style in syntax.items():
                 code.append(f"({json.dumps(name)}.to_string(), {rust_style(style)}),")
             code.append("]) };")
-            for user in (original, report["retained_rules"], []):
+            for user in ((original, report["retained_rules"], []) if report else (original, [])):
                 rules = user + builtins
                 code.append("{ let rules = vec![")
                 for rule in rules:
                     assert not set(rule) - {"token_type", "token_modifiers", "style"}, rule
-                    code.append(f'r({json.dumps(rule["token_type"])}, {string_slice(rule.get("token_modifiers", []))}, {string_slice(rule.get("style", []))}),')
+                    token_type = f'Some({json.dumps(rule["token_type"])})' if "token_type" in rule else "None"
+                    code.append(f'r({token_type}, {string_slice(rule.get("token_modifiers", []))}, {string_slice(rule.get("style", []))}),')
                 code.append("];")
                 for token, combos in audit.domain(original + builtins):
                     # Mirrors the source's rule assembly; convert_token itself

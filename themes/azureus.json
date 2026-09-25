@@ -517,6 +517,14 @@
             "color": "#49ace9ff",
             "font_style": "normal",
             "font_weight": 400
+          },
+          "noctis.mutable": {
+            "color": "#49d6e9ff"
+          },
+          "noctis.self": {
+            "color": "#e66533ff",
+            "font_style": "normal",
+            "font_weight": 400
           }
         }
       }
